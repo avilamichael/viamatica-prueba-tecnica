@@ -38,13 +38,13 @@ public class AuthServiceImpl implements AuthService {
             throw new IllegalStateException("El usuario está bloqueado.");
         }
 
+        if (sessionRepository.existsByUsuario_IdAndFechaLogoutIsNull(usuario.getId())) {
+            throw new IllegalStateException("El usuario ya tiene una sesión activa.");
+        }
+
         if (!passwordEncoder.matches(password, usuario.getPassword())) {
             registrarLoginFallido(usuario);
             throw new IllegalArgumentException("Credenciales incorrectas.");
-        }
-
-        if (sessionRepository.existsByUsuario_IdAndFechaLogoutIsNull(usuario.getId())) {
-            throw new IllegalStateException("El usuario ya tiene una sesión activa.");
         }
 
         if (usuario.getIntentosFallidos() > 0) {
@@ -75,7 +75,7 @@ public class AuthServiceImpl implements AuthService {
 
     private void registrarLoginFallido(Usuario usuario) {
         usuario.setIntentosFallidos(usuario.getIntentosFallidos() + 1);
-        if (usuario.getIntentosFallidos() >= INTENTOS_SESSION_MAX) {
+        if (usuario.getIntentosFallidos() > INTENTOS_SESSION_MAX) {
             usuario.setEstado("BLOQUEADO");
         }
         usuarioRepository.save(usuario);
