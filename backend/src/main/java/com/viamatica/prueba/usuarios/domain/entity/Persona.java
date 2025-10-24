@@ -18,7 +18,7 @@ public class Persona {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String identificacion;
     private String nombres;
     private String apellidos;
