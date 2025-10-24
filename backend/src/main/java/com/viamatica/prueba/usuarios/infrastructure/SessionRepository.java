@@ -14,6 +14,6 @@ public interface SessionRepository extends JpaRepository<Session, Long> {
     Optional<Session> findByUsuario_IdAndFechaLogoutIsNull(Long idUsuario);
 
     @Procedure(procedureName = "seguridad.registrar_intento_login")
-    void registrarIntentoLogin(@Param("p_usuario") Long idUsuario);
+    void registrarIntentoLogin(@Param("usuario_id") Long idUsuario);
 
 }
