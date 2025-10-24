@@ -9,6 +9,7 @@ import com.viamatica.prueba.util.JwtTokenUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 
 @Service
@@ -75,9 +76,11 @@ public class AuthServiceImpl implements AuthService {
 
     private void registrarLoginFallido(Usuario usuario) {
         usuario.setIntentosFallidos(usuario.getIntentosFallidos() + 1);
-        if (usuario.getIntentosFallidos() > INTENTOS_SESSION_MAX) {
+        if (usuario.getIntentosFallidos() >= INTENTOS_SESSION_MAX) {
+            usuario.setIntentosFallidos(0);
             usuario.setEstado("BLOQUEADO");
         }
+        sessionRepository.registrarIntentoLogin(usuario.getId());
         usuarioRepository.save(usuario);
     }
 
